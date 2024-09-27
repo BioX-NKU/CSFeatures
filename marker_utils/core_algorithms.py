@@ -376,5 +376,5 @@ def get_spatial_MarkersEI(adata,n_comps=50,
     info=calculate_gene_info(adata,method_list)
     print("------Congratulations, success!------") 
     for i in info.keys():
-        adata.obs[f"{i}_EI"]=info[i]['EI']
+        adata.var[f"{i}_EI"]=info[i]['EI']
     return info,adata
