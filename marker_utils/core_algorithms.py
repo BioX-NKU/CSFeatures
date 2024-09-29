@@ -319,6 +319,25 @@ def calculate_gene_info(adata,methods_list=[
             print(f"{time_info_dict[i]:.2f} seconds used for {i}.")
     return ans
 
+def dict_to_dataframe(data):
+    # 提取并按照顺序保存指定的字段
+    ordered_data = {
+        'Features': data['gene_name'],
+        'Mean': data['mean'],
+        'Smoothness': data['smoothness'],
+        'Local_max': data['other_clusters_local_mean_max'],  # 使用下标表示 max
+        'V': data['V'],
+        'Prop': data['prop'],
+        'Prop_sum': data['prop_sum'],
+        'P': data['prop_max'],
+        'EI': data['EI']
+    }
+
+    # 转换为DataFrame
+    df = pd.DataFrame(ordered_data)
+    return df
+
+
 
 def getMarkersEI(adata:str,n_comps=50,n_neighbors=30,metric='euclidean',method_list:list=[
     calculate_mean_and_var,
@@ -347,7 +366,9 @@ def getMarkersEI(adata:str,n_comps=50,n_neighbors=30,metric='euclidean',method_l
     info=calculate_gene_info(adata,method_list)
     print("------Congratulations, success!------") 
     for i in info.keys():
-        adata.obs[f"{i}_EI"]=info[i]['EI']
+        adata.var[f"{i}_EI"]=info[i]['EI']
+    for i in info.keys():
+        info[i]=dict_to_dataframe(info[i])
     return info,adata
 
 
@@ -377,4 +398,6 @@ def get_spatial_MarkersEI(adata,n_comps=50,
     print("------Congratulations, success!------") 
     for i in info.keys():
         adata.var[f"{i}_EI"]=info[i]['EI']
+    for i in info.keys():
+        info[i]=dict_to_dataframe(info[i])
     return info,adata
